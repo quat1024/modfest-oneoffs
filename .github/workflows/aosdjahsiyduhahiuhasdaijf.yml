@@ -1,0 +1,26 @@
+name: dfuysf8dsgufhsduiufy7o8ufhdsfj
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Validate wrapper, restore Gradle™ cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle™™
+        run: ./gradlew clean build
+
+      - name: welcoming a jar into the world is a beautiful thing
+        uses: actions/upload-artifact@v4
+        with:
+          name: Artifacts
+          path: build/libs/

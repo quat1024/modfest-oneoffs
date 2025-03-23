@@ -18,6 +18,9 @@
 			"agency.highlysuspect.oneoffs.spectatorheads.SpectatorHeads"
 		]
 	},
+	"mixins": [
+		"spectatorheads.mixin.json"
+	],
 	"depends": {
 		"fabricloader": "*",
 		"minecraft": ">=1.21"

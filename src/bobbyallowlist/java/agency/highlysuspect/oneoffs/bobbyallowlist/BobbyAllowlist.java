@@ -14,9 +14,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,8 +27,10 @@ import java.nio.file.Path;
 public class BobbyAllowlist extends BaseClient {
 	public BobbyAllowlist() {
 		super("modfest-oneoffs-bobbyallowlist");
+		INSTANCE = this;
 	}
 	
+	public static BobbyAllowlist INSTANCE;
 	public static BobbyAllowlistConfig CONFIG = new BobbyAllowlistConfig();
 	
 	@Override
@@ -55,10 +55,8 @@ public class BobbyAllowlist extends BaseClient {
 				Minecraft.getInstance().execute(() -> CONFIG = newState));
 		});
 		
-		ClientCommandRegistrationCallback.EVENT.register((cbk, buildContext) -> {
-			HolderLookup.RegistryLookup<BlockEntityType<?>> bes = buildContext.lookupOrThrow(Registries.BLOCK_ENTITY_TYPE);
-			
-			cbk.register(ClientCommandManager.literal("bobbyallowlist")
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+			dispatcher.register(ClientCommandManager.literal("bobbyallowlist")
 				.then(ClientCommandManager.literal("type")
 					.executes(cmd -> {
 						HitResult h = cmd.getSource().getClient().hitResult;
@@ -76,15 +74,15 @@ public class BobbyAllowlist extends BaseClient {
 						assert rl != null;
 						cmd.getSource().sendFeedback(Component.literal("adding type " + rl + " to allowlist"));
 						CONFIG.allowTypes.add(rl.toString());
-						autoload.save(CONFIG);
+						autoload.saveLater(CONFIG);
 						return 1;
 					})
-					.then(ClientCommandManager.argument("type", StringArgumentType.string())
+					.then(ClientCommandManager.argument("type", StringArgumentType.greedyString())
 						.executes(cmd -> {
 							String type = StringArgumentType.getString(cmd, "type");
 							cmd.getSource().sendFeedback(Component.literal("adding type " + type + " to allowlist"));
 							CONFIG.allowTypes.add(type);
-							autoload.save(CONFIG);
+							autoload.saveLater(CONFIG);
 							return 1;
 						})
 					)
@@ -99,7 +97,7 @@ public class BobbyAllowlist extends BaseClient {
 						BlockPos pos = bhr.getBlockPos();
 						cmd.getSource().sendFeedback(Component.literal("adding pos " + pos.toShortString() + " to allowlist"));
 						CONFIG.allowPos.add(pos);
-						autoload.save(CONFIG);
+						autoload.saveLater(CONFIG);
 						return 1;
 					})
 					.then(ClientCommandManager.argument("pos", BlockPosArgument.blockPos())
@@ -109,7 +107,7 @@ public class BobbyAllowlist extends BaseClient {
 							
 							cmd.getSource().sendFeedback(Component.literal("adding pos " + pos.toShortString() + " to allowlist"));
 							CONFIG.allowPos.add(pos);
-							autoload.save(CONFIG);
+							autoload.saveLater(CONFIG);
 							return 1;
 						})
 					)

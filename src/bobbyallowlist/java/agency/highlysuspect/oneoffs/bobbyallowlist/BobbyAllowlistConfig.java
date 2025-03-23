@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,23 +22,23 @@ public class BobbyAllowlistConfig {
 	}
 	
 	private boolean canBypass_Debug(CompoundTag tag) {
-		System.out.println(tag);
+		Logger log = BobbyAllowlist.INSTANCE.log;
 		
 		String type = tag.getString("id");
 		BlockPos pos = BlockEntity.getPosFromTag(tag);
 		String msg = type + " (" + pos.toShortString() + ")";
 		if(allowTypes.contains(type)) {
-			System.out.println("Match TYPE: " + msg);
+			log.info("Match TYPE: {}", msg);
 			return true;
 		} else {
-			System.out.println("Fail TYPE: " + msg);
+			log.warn("Fail TYPE: {}", msg);
 		}
 		
 		if(allowPos.contains(pos)) {
-			System.out.println("Match POS: " + msg);
+			log.info("Match POS: {}", msg);
 			return true;
 		} else {
-			System.out.println("Fail POS: " + msg);
+			log.warn("Fail POS: {}", msg);
 		}
 		
 		return false;
@@ -95,7 +96,7 @@ public class BobbyAllowlistConfig {
 	
 	//todo this made more sense when i actually tried to use BlockEntityType
 	private static String writeBlockEntityType(String type) {
-		return type;
+		return type.trim();
 	}
 	
 	private static List<String> parseBlockEntityTypeList(String s) {

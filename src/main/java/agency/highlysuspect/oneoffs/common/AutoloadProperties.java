@@ -1,6 +1,7 @@
 package agency.highlysuspect.oneoffs.common;
 
 import agency.highlysuspect.oneoffs.shared.SharedFileWatcher;
+import net.minecraft.Util;
 import org.slf4j.Logger;
 
 import java.io.Reader;
@@ -32,25 +33,36 @@ public class AutoloadProperties<T> {
 	protected final String comments;
 	
 	protected long filewatcherDebounce = System.currentTimeMillis();
+	protected static final int TIMEOUT_MS = 300;
 	
-	public void save(T state) {
+	public void saveNow(T state) {
 		//create the default config file based on the current state
 		Properties props = new Properties();
 		toProperties.accept(state, props);
 		
+		//try to ignore the next filewatcher event,
+		//since we're about to trigger it by saving the file
+		filewatcherDebounce = System.currentTimeMillis();
+		
 		//save it
+		log.info("Saving config to {}", propsPath);
 		try(Writer writer = Files.newBufferedWriter(propsPath, StandardCharsets.UTF_8)) {
-			props.store(writer, String.join("\n", comments));
+			props.store(writer, comments);
 		} catch (Throwable e) {
 			log.error("Failed to save config file to {}", propsPath, e);
 		}
+	}
+	
+	@SuppressWarnings("resource") //bro we are not closing this executor
+	public void saveLater(T state) {
+		Util.ioPool().submit(() -> saveNow(state));
 	}
 	
 	public void load(Consumer<T> stateUpdater) {
 		try {
 			if(Files.notExists(propsPath)) {
 				log.info("Creating default config file at {}", propsPath);
-				save(defaultState.get());
+				saveNow(defaultState.get());
 				return;
 			}
 			
@@ -69,7 +81,7 @@ public class AutoloadProperties<T> {
 				toProperties.accept(newState, savebackProps);
 				if(!props.equals(savebackProps)) {
 					log.info("Correcting config file at {}", propsPath);
-					save(newState);
+					saveNow(newState);
 				}
 			}
 		} catch (Throwable e) {
@@ -81,7 +93,7 @@ public class AutoloadProperties<T> {
 	
 	public void watch(Consumer<T> stateUpdater) {
 		SharedFileWatcher.registerWithWatcher(propsPath, () -> {
-			if(System.currentTimeMillis() - filewatcherDebounce > 200) {
+			if(System.currentTimeMillis() - filewatcherDebounce > TIMEOUT_MS) {
 				filewatcherDebounce = System.currentTimeMillis();
 				load(stateUpdater);
 			}

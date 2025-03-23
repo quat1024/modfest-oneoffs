@@ -8,13 +8,14 @@ import java.util.Set;
 
 public class SharedFileWatcher {
 	static final WatchService WATCHER;
+	static final Object lock = new Object();
 	static final Set<Path> watchedDirectories = new HashSet<>();
 	static final Map<String, Runnable> actions = new HashMap<>();
 	
 	static Thread watcherThread;
 	
 	public static void registerWithWatcher(Path configFile, Runnable action) {
-		synchronized(watchedDirectories) { //arbitrary object as a mutex
+		synchronized(lock) {
 			Path configDir = configFile.getParent();
 			
 			if(!watchedDirectories.contains(configDir)) {

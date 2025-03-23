@@ -1,0 +1,118 @@
+import net.fabricmc.loom.task.RemapJarTask;
+import net.fabricmc.loom.task.AbstractRunTask;
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
+
+plugins {
+    id "java"
+    id "fabric-loom" version "1.10.4"
+    id "com.gradleup.shadow" version "9.0.0-beta11"
+}
+
+group = "agency.highlysuspect"
+version = "1.0-SNAPSHOT"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21);
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 21
+}
+
+sourceSets {
+    main
+    
+    spectatorheads {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+    
+    bobbyallowlist {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:1.21.1"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:0.16.10"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.115.3+1.21.1"
+    
+    modImplementation files("deps/bobby-5.2.4+mc1.21.jar")
+    //bobby JiJs
+    modLocalRuntime files([
+            "deps/config-1.4.2.jar",
+            "deps/configurate-core-4.1.2.jar",
+            "deps/configurate-hocon-4.1.2.jar",
+            "deps/geantyref-1.3.13.jar"
+    ])
+    
+    //todo do this inside the sourcesets loop below...
+    spectatorheadsImplementation sourceSets.main.output
+    bobbyallowlistImplementation sourceSets.main.output
+}
+
+[
+        sourceSets.spectatorheads,
+        sourceSets.bobbyallowlist
+].each { set ->
+    println "thinkin bout ${set.name}"
+    
+    def myBaseName = "modfest-oneoffs-${set.name}"
+    
+    //add to loom run config classpath, just blindly copying loom rungametask here
+    //maybe a better classpath to use :thinking:
+    tasks.withType(AbstractRunTask.class).configureEach {
+        it.internalClasspath.from set.runtimeClasspath
+    }
+    
+    //add processResources for this srcset
+    //TODO whats the right way to get the processResources task lol
+    tasks.named("process${set.name.capitalize()}Resources").configure {
+        it.inputs.property "version", project.version
+        it.filesMatching(["**/fabric.mod.json"]) {
+            expand "version": project.version
+        }
+    }
+    
+    //devjar task that includes the common sourceset
+    def setShadowTask = tasks.register("${set.name}Shadow", ShadowJar) {
+        it.archiveBaseName = myBaseName
+        
+        //include both source sets
+        from sourceSets.main.output
+        from set.output
+        //but move the common sourceset into a unique location
+        it.relocate(
+                "agency.highlysuspect.oneoffs.common",
+                "agency.highlysuspect.oneoffs.${set.name}.common"
+        )
+        
+        //https://github.com/FabricMC/fabric-loom/blob/ebc638f2865141bd8ce1ce26d6a05849ec771946/src/main/java/net/fabricmc/loom/task/RemapTaskConfiguration.java#L102
+        it.archiveClassifier = "dev"
+        it.destinationDirectory = tasks.jar.destinationDirectory
+    }
+    
+    //distjar task
+    def setRemapTask = tasks.register("${set.name}Remap", RemapJarTask) {
+        it.archiveBaseName = myBaseName
+        it.dependsOn setShadowTask
+        it.input = setShadowTask.flatMap({ it.getArchiveFile() })
+    }
+    
+    artifacts {
+        namedElements setShadowTask
+        
+        apiElements setRemapTask
+        runtimeElements setRemapTask
+    }
+    
+    //hang these tasks off corresponding tasks from the main sourceset
+    //mainly so "./gradlew build" builds everything, and you don't need a buildAll or whatev
+    tasks.named("jar").configure {
+        it.dependsOn setShadowTask
+    }
+    
+    tasks.named("assemble").configure {
+        it.dependsOn setRemapTask
+    }
+}

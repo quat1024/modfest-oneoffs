@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "modfest-oneoffs-spectatorheads",
+	"version": "${version}",
+	"name": "No Spectator Heads",
+	"description": "remove spectator heads",
+	"authors": [
+		"quaternary"
+	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/modfest-oneoffs/"
+	},
+	"license": "LGPL-3.0-or-later",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"agency.highlysuspect.oneoffs.spectatorheads.SpectatorHeads"
+		]
+	},
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=1.21"
+	}
+}

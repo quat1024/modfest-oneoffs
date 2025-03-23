@@ -1,0 +1,22 @@
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+		maven { url = "https://maven.fabricmc.net/" }
+		maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+//		maven {
+//			url = "https://repo.sleeping.town"
+//			content {
+//				includeGroup "agency.highlysuspect"
+//				includeGroup "agency.highlysuspect.minivan" //this is a certified plugins dsl moment
+//			}
+//		}
+	}
+}
+
+//i love toolchains im toolchaining out rn
+plugins {
+	id "org.gradle.toolchains.foojay-resolver-convention" version "0.8.0"
+}
+
+rootProject.name = 'modfest-oneoffs'
+

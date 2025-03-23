@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "modfest-oneoffs-bobbyallowlist",
+	"version": "${version}",
+	"name": "Bobby Allowlist",
+	"description": "permit some entities to be loaded by bobby",
+	"authors": [
+		"quaternary"
+	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/modfest-oneoffs/"
+	},
+	"license": "LGPL-3.0-or-later",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"agency.highlysuspect.oneoffs.bobbyallowlist.BobbyAllowlist"
+		]
+	},
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=1.21"
+	}
+}

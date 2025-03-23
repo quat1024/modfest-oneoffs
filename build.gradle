@@ -1,15 +1,19 @@
-import net.fabricmc.loom.task.RemapJarTask;
-import net.fabricmc.loom.task.AbstractRunTask;
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar;
+import net.fabricmc.loom.task.AbstractRunTask
+import net.fabricmc.loom.task.RemapJarTask
+
+buildscript {
+    dependencies {
+        classpath "com.google.code.gson:gson:2.12.1"
+    }
+}
 
 plugins {
     id "java"
     id "fabric-loom" version "1.10.4"
-    id "com.gradleup.shadow" version "9.0.0-beta11"
 }
 
 group = "agency.highlysuspect"
-version = "1.0"
+version = "1.1"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21);
 tasks.withType(JavaCompile).configureEach {
@@ -54,42 +58,54 @@ dependencies {
     bobbyallowlistImplementation sourceSets.main.output
 }
 
+loom {
+    mixin {
+        add(sourceSets.main, "oneoffs-lib.refmap.json") //dont think this is used atm since oneoffs-lib doesn't define any refmaps
+        //" Failed to find mixin mappings mixin-map-loom.mappings.1_21_1.layered+hash.2198-v2.test.tiny in task outputs: task 'compileTestJava' output files "
+        //yeah i'd hope so
+        add(sourceSets.test, "oneoffs-lib-test-somehow.refmap.json")
+    }
+}
+
+//breaking this out into a function
+Action<ProcessResources> configureProcessResources = {
+    it.inputs.property "version", project.version
+    it.filesMatching(["**/fabric.mod.json"]) {
+        expand "version": project.version
+    }
+}
+
+//root jar processResources
+tasks.named("processResources").configure configureProcessResources
+
 [
         sourceSets.spectatorheads,
         sourceSets.bobbyallowlist
 ].each { set ->
     println "thinkin bout ${set.name}"
     
-    def myBaseName = "modfest-oneoffs-${set.name}"
+    def myBaseName = "oneoffs-${set.name}"
+    
+    loom {
+        mixin {
+            add(set, "oneoffs-${set.name}.refmap.json")
+        }
+    }
     
     //add to loom run config classpath, just blindly copying loom rungametask here
-    //maybe a better classpath to use :thinking:
+    //there's maybe a better classpath property to use :thinking:
     tasks.withType(AbstractRunTask.class).configureEach {
         it.internalClasspath.from set.runtimeClasspath
     }
     
-    //add processResources for this srcset
-    //TODO whats the right way to get the processResources task lol
-    tasks.named("process${set.name.capitalize()}Resources").configure {
-        it.inputs.property "version", project.version
-        it.filesMatching(["**/fabric.mod.json"]) {
-            expand "version": project.version
-        }
-    }
+    //set up processResources for this srcset
+    //TODO whats the right way to find the processResources task lol
+    tasks.named("process${set.name.capitalize()}Resources").configure configureProcessResources
     
-    //devjar task that includes the common sourceset
-    def setShadowTask = tasks.register("${set.name}Shadow", ShadowJar) {
+    //devjar task
+    def setJarTask = tasks.register("${set.name}Jar", Jar) {
         it.archiveBaseName = myBaseName
-        
-        //include both source sets
-        from sourceSets.main.output
         from set.output
-        //but move the common sourceset into a unique location
-        it.relocate(
-                "agency.highlysuspect.oneoffs.common",
-                "agency.highlysuspect.oneoffs.${set.name}.common"
-        )
-        
         //https://github.com/FabricMC/fabric-loom/blob/ebc638f2865141bd8ce1ce26d6a05849ec771946/src/main/java/net/fabricmc/loom/task/RemapTaskConfiguration.java#L102
         it.archiveClassifier = "dev"
         it.destinationDirectory = tasks.jar.destinationDirectory
@@ -98,12 +114,12 @@ dependencies {
     //distjar task
     def setRemapTask = tasks.register("${set.name}Remap", RemapJarTask) {
         it.archiveBaseName = myBaseName
-        it.dependsOn setShadowTask
-        it.input = setShadowTask.flatMap({ it.getArchiveFile() })
+        it.dependsOn setJarTask
+        it.input = setJarTask.flatMap({ it.getArchiveFile() })
     }
     
     artifacts {
-        namedElements setShadowTask
+        namedElements setJarTask
         
         apiElements setRemapTask
         runtimeElements setRemapTask
@@ -111,11 +127,6 @@ dependencies {
     
     //hang these tasks off corresponding tasks from the main sourceset
     //mainly so "./gradlew build" builds everything, and you don't need a buildAll or whatev
-    tasks.named("jar").configure {
-        it.dependsOn setShadowTask
-    }
-    
-    tasks.named("assemble").configure {
-        it.dependsOn setRemapTask
-    }
+    tasks.named("jar").configure { it.dependsOn setJarTask }
+    tasks.named("assemble").configure { it.dependsOn setRemapTask }
 }

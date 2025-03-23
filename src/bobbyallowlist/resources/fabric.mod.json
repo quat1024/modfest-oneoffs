@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "modfest-oneoffs-bobbyallowlist",
+	"id": "oneoffs-bobbyallowlist",
 	"version": "${version}",
 	"name": "Bobby Allowlist",
 	"description": "permit some entities to be loaded by bobby",
@@ -19,10 +19,11 @@
 		]
 	},
 	"mixins": [
-		"bobbyallowlist.mixin.json"
+		"oneoffs-bobbyallowlist.mixin.json"
 	],
 	"depends": {
 		"fabricloader": "*",
+		"oneoffs-lib": "*",
 		"bobby": "*",
 		"minecraft": ">=1.21"
 	}

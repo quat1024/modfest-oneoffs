@@ -1,5 +1,7 @@
 package agency.highlysuspect.oneoffs.bobbyallowlist;
 
+import java.nio.file.Path;
+
 import agency.highlysuspect.oneoffs.common.AutoloadProperties;
 import agency.highlysuspect.oneoffs.common.BaseClient;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -22,11 +24,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import java.nio.file.Path;
-
 public class BobbyAllowlist extends BaseClient {
 	public BobbyAllowlist() {
-		super("modfest-oneoffs-bobbyallowlist");
+		super("oneoffs-bobbyallowlist");
 		INSTANCE = this;
 	}
 	

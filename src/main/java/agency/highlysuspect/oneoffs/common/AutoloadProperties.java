@@ -1,6 +1,5 @@
 package agency.highlysuspect.oneoffs.common;
 
-import agency.highlysuspect.oneoffs.shared.SharedFileWatcher;
 import net.minecraft.Util;
 import org.slf4j.Logger;
 

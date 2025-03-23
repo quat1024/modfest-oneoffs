@@ -1,0 +1,19 @@
+{
+	"schemaVersion": 1,
+	"id": "oneoffs-lib",
+	"version": "${version}",
+	"name": "Oneoffs Lib",
+	"description": "Shared code for the Oneoffs mods",
+	"authors": [
+		"quaternary"
+	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/modfest-oneoffs/"
+	},
+	"license": "LGPL-3.0-or-later",
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=1.21"
+	}
+}

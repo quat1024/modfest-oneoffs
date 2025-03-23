@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "modfest-oneoffs-spectatorheads",
+	"id": "oneoffs-spectatorheads",
 	"version": "${version}",
 	"name": "No Spectator Heads",
 	"description": "remove spectator heads",
@@ -19,10 +19,11 @@
 		]
 	},
 	"mixins": [
-		"spectatorheads.mixin.json"
+		"oneoffs-spectatorheads.mixin.json"
 	],
 	"depends": {
 		"fabricloader": "*",
+		"oneoffs-lib": "*",
 		"minecraft": ">=1.21"
 	}
 }

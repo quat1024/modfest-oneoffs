@@ -1,5 +1,8 @@
 package agency.highlysuspect.oneoffs.spectatorheads;
 
+import java.nio.file.Path;
+import java.util.function.BiFunction;
+
 import agency.highlysuspect.oneoffs.common.AutoloadProperties;
 import agency.highlysuspect.oneoffs.common.BaseClient;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,12 +14,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-import java.nio.file.Path;
-import java.util.function.BiFunction;
-
 public class SpectatorHeads extends BaseClient {
 	public SpectatorHeads() {
-		super("modfest-oneoffs-spectatorheads");
+		super("oneoffs-spectatorheads");
 	}
 	
 	public static SpectatorHeadsConfig CONFIG = new SpectatorHeadsConfig();

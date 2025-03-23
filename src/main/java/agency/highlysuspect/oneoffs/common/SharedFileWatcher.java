@@ -1,4 +1,4 @@
-package agency.highlysuspect.oneoffs.shared;
+package agency.highlysuspect.oneoffs.common;
 
 import java.nio.file.*;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class SharedFileWatcher {
 	
 	public static void startWatcherThreadIfNeeded() {
 		if(watcherThread == null)  {
-			watcherThread = new Thread("modfest-oneoffs config filewatcher") {
+			watcherThread = new Thread("oneoffs config filewatcher") {
 				@Override
 				public void run() {
 					try {
@@ -44,7 +44,7 @@ public class SharedFileWatcher {
 							//block until there's a new event in this directory
 							WatchKey key = WATCHER.take();
 							if(!key.isValid()) continue;
-							
+
 							//look through the events
 							for(WatchEvent<?> event : key.pollEvents()) {
 								//did it modify a file?
@@ -54,12 +54,12 @@ public class SharedFileWatcher {
 									if(action != null) action.run();
 								}
 							}
-							
+
 							//all done
 							key.reset();
 						}
 					} catch (Throwable e) {
-						System.err.println("modfest-oneoffs filewatcher failed!");
+						System.err.println("oneoffs filewatcher failed!");
 						e.printStackTrace();
 					}
 				}

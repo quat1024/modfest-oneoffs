@@ -18,8 +18,12 @@
 			"agency.highlysuspect.oneoffs.bobbyallowlist.BobbyAllowlist"
 		]
 	},
+	"mixins": [
+		"bobbyallowlist.mixin.json"
+	],
 	"depends": {
 		"fabricloader": "*",
+		"bobby": "*",
 		"minecraft": ">=1.21"
 	}
 }

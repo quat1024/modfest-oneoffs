@@ -67,13 +67,15 @@ public class AutoloadProperties<T> {
 			}
 			
 			try(Reader reader = Files.newBufferedReader(propsPath, StandardCharsets.UTF_8)) {
-				log.info("Loading config file at {}", propsPath);
+				log.info("Parsing config file at {}", propsPath);
 				//load the properties
 				Properties props = new Properties();
 				props.load(reader);
 				
 				//create the state
 				T newState = fromProperties.apply(props);
+				
+				log.info("Looks good, loading it on-thread...");
 				stateUpdater.accept(newState);
 				
 				//if it didn't load as the user intended, re-serialize it from scratch

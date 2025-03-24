@@ -33,6 +33,11 @@ sourceSets {
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
     }
+    
+    quickfov {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
 }
 
 dependencies {
@@ -56,6 +61,7 @@ dependencies {
     //todo do this inside the sourcesets loop below...
     spectatorheadsImplementation sourceSets.main.output
     bobbyallowlistImplementation sourceSets.main.output
+    quickfovImplementation sourceSets.main.output
 }
 
 loom {
@@ -80,7 +86,8 @@ tasks.named("processResources").configure configureProcessResources
 
 [
         sourceSets.spectatorheads,
-        sourceSets.bobbyallowlist
+        sourceSets.bobbyallowlist,
+        sourceSets.quickfov,
 ].each { set ->
     println "thinkin bout ${set.name}"
     

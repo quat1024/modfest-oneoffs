@@ -1,7 +1,5 @@
 package agency.highlysuspect.oneoffs.bobbyallowlist;
 
-import java.nio.file.Path;
-
 import agency.highlysuspect.oneoffs.common.AutoloadProperties;
 import agency.highlysuspect.oneoffs.common.BaseClient;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -9,7 +7,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -36,10 +33,10 @@ public class BobbyAllowlist extends BaseClient {
 	@Override
 	public void onInitializeClient() {
 		log.info("Hello from bobbyallowlist");
-		
-		Path configPath = FabricLoader.getInstance().getConfigDir().resolve("bobby-block-entity-allowlist.conf");
+
 		AutoloadProperties<BobbyAllowlistConfig> autoload = new AutoloadProperties<>(
-			log, configPath,
+			log,
+			configPath("bobby-block-entity-allowlist.conf"),
 			BobbyAllowlistConfig::new,
 			BobbyAllowlistConfig::toProperties,
 			BobbyAllowlistConfig::fromProperties

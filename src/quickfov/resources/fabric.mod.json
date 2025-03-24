@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "oneoffs-spectatorheads",
+	"id": "oneoffs-quickfov",
 	"version": "${version}",
-	"name": "No Spectator Heads",
-	"description": "Makes other spectators invisible in spectator mode",
+	"name": "Quickfov",
+	"description": "Easily change FoV by holding ALT and using the mouse",
 	"authors": [
 		"quaternary"
 	],
@@ -15,11 +15,11 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"agency.highlysuspect.oneoffs.spectatorheads.SpectatorHeads"
+			"agency.highlysuspect.oneoffs.quickfov.Quickfov"
 		]
 	},
 	"mixins": [
-		"oneoffs-spectatorheads.mixin.json"
+		"oneoffs-quickfov.mixin.json"
 	],
 	"depends": {
 		"fabricloader": "*",

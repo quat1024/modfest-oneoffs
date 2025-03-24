@@ -1,6 +1,5 @@
 package agency.highlysuspect.oneoffs.spectatorheads;
 
-import java.nio.file.Path;
 import java.util.function.BiFunction;
 
 import agency.highlysuspect.oneoffs.common.AutoloadProperties;
@@ -9,7 +8,6 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -24,10 +22,10 @@ public class SpectatorHeads extends BaseClient {
 	@Override
 	public void onInitializeClient() {
 		log.info("hello from spectatorheads");
-		
-		Path configPath = FabricLoader.getInstance().getConfigDir().resolve("spectatorheads.properties");
+
 		AutoloadProperties<SpectatorHeadsConfig> autoload = new AutoloadProperties<>(
-			log, configPath,
+			log,
+			configPath("spectatorheads.properties"),
 			SpectatorHeadsConfig::new,
 			SpectatorHeadsConfig::toProperties,
 			SpectatorHeadsConfig::fromProperties

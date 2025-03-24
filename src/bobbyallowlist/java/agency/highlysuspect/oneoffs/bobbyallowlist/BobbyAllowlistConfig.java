@@ -1,13 +1,20 @@
 package agency.highlysuspect.oneoffs.bobbyallowlist;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.slf4j.Logger;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class BobbyAllowlistConfig {
 	public Set<String> allowTypes = new HashSet<>();
@@ -56,6 +63,24 @@ public class BobbyAllowlistConfig {
 		cfg.allowTypes.addAll(parseBlockEntityTypeList(props.getProperty("allowTypes", "")));
 		cfg.debug = Boolean.parseBoolean(props.getProperty("debug", "false"));
 		return cfg;
+	}
+
+	public static String[] comment() {
+		return new String[] {
+			"oneoffs-bobbyallowlist config file",
+			"",
+			"Note that this mod only does anything if `no-block-entities` is `true` in Bobby's config.",
+			"",
+			"allowTypes: Semicolon-separated list of block entity types to allow in Bobby fake chunks.",
+			"  (You can add block entities to this list by looking at them and running '/bobbyallowlist type'.)",
+			"",
+			"allowPos: Semicolon-separated list of x,y,z positions. Any block entities in these positions",
+			"  are allowed in Bobby fake chunks. (You can add positions to this list by looking at them and",
+			"  running '/bobbyallowlist pos'.)",
+			"",
+			"debug: Spam a lot of debug information when a Bobby fake chunk is loaded or unloaded.",
+			"",
+		};
 	}
 	
 	private static Optional<BlockPos> parseBlockPos(String s) {

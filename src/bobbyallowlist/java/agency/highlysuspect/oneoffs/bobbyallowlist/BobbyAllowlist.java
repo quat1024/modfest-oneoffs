@@ -39,7 +39,8 @@ public class BobbyAllowlist extends BaseClient {
 			configPath("bobby-block-entity-allowlist.conf"),
 			BobbyAllowlistConfig::new,
 			BobbyAllowlistConfig::toProperties,
-			BobbyAllowlistConfig::fromProperties
+			BobbyAllowlistConfig::fromProperties,
+			BobbyAllowlistConfig.comment()
 		);
 		
 		//wait for CLIENT_STARTED to load config since it uses BlockEntityTypes

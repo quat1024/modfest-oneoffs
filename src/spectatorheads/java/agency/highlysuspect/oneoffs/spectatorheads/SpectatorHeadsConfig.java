@@ -14,4 +14,13 @@ public class SpectatorHeadsConfig {
 		cfg.showSpectatorHeads = Boolean.parseBoolean(props.getProperty("showSpectatorHeads", "false"));
 		return cfg;
 	}
+
+	public static String[] comment() {
+		return new String[] {
+			"oneoffs-spectatorheads config file",
+			"",
+			"showSpectatorHeads: If 'false', other spectators will not render in spectator mode.",
+			"",
+		};
+	}
 }

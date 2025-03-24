@@ -28,7 +28,8 @@ public class SpectatorHeads extends BaseClient {
 			configPath("spectatorheads.properties"),
 			SpectatorHeadsConfig::new,
 			SpectatorHeadsConfig::toProperties,
-			SpectatorHeadsConfig::fromProperties
+			SpectatorHeadsConfig::fromProperties,
+			SpectatorHeadsConfig.comment()
 		);
 		
 		//initial load

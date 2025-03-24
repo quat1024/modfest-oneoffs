@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MouseHandler.class)
 public class MouseHandlerMixin {
 	@Shadow private double accumulatedDX;
+	@Shadow private double accumulatedDY;
 
 	@Inject(method = "turnPlayer", at = @At("HEAD"), cancellable = true)
 	private void quickfov$whenTurning(
@@ -18,7 +19,7 @@ public class MouseHandlerMixin {
 		CallbackInfo ci
 	) {
 		if(Quickfov.INSTANCE.key.isDown()) {
-			Quickfov.INSTANCE.doIt(accumulatedDX);
+			Quickfov.INSTANCE.doIt(accumulatedDX, accumulatedDY);
 			ci.cancel();
 		} else {
 			Quickfov.INSTANCE.dontDoIt();

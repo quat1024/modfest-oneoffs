@@ -30,7 +30,8 @@ public class Quickfov extends BaseClient {
 			configPath("quickfov.properties"),
 			QuickfovConfig::new,
 			QuickfovConfig::toProperties,
-			QuickfovConfig::fromProperties
+			QuickfovConfig::fromProperties,
+			QuickfovConfig.comment()
 		);
 		autoload.load(newConfig -> config = newConfig);
 		autoload.watch(newConfig ->
@@ -39,8 +40,10 @@ public class Quickfov extends BaseClient {
 
 	double accumRoundoff;
 
-	public void doIt(double dx) {
+	public void doIt(double dx, double dy) {
 		Options opts = Minecraft.getInstance().options;
+
+		double d = config.horiz ? dx : dy;
 
 		//minecraft does this same type of computation for the sensitivity
 		//fern calls the local variable "g"
@@ -50,15 +53,15 @@ public class Quickfov extends BaseClient {
 		sens = sens * sens * sens;
 		sens *= 8;
 
-		//apply your sensitivity to dx
-		double dxSens = dx * sens * config.sensitivity;
+		//apply your sensitivity to d
+		double dSens = d * sens * config.sensitivity;
 
 		//how much to change the fov
-		int deltaFov = (int) Math.round(dxSens);
+		int deltaFov = (int) Math.round(dSens);
 
 		//accumulate roundoff since the fov can only be set to integers
 		//this seems backwards but idk it works
-		accumRoundoff += (deltaFov - dxSens);
+		accumRoundoff += (deltaFov - dSens);
 		if(accumRoundoff >= 1) {
 			accumRoundoff--;
 			deltaFov--;
@@ -67,7 +70,7 @@ public class Quickfov extends BaseClient {
 			deltaFov++;
 		}
 
-		//log.info("dx {} deltaFov {} roundoff {}", dx, deltaFov, accumRoundoff);
+		//log.info("d {} deltaFov {} roundoff {}", d, deltaFov, accumRoundoff);
 		int oldFov = opts.fov().get();
 		int newFov = oldFov + deltaFov;
 

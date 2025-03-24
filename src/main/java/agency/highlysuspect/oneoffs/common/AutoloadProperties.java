@@ -90,8 +90,6 @@ public class AutoloadProperties<T> {
 		}
 	}
 	
-	//if it didn't load exactly as the user intended, save the modified file
-	
 	public void watch(Consumer<T> stateUpdater) {
 		SharedFileWatcher.registerWithWatcher(propsPath, () -> {
 			if(System.currentTimeMillis() - filewatcherDebounce > TIMEOUT_MS) {

@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "agency.highlysuspect"
-version = "1.2"
+version = "1.3"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21);
 tasks.withType(JavaCompile).configureEach {
@@ -38,6 +38,11 @@ sourceSets {
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
     }
+
+    hideservermessages {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+		}
 }
 
 dependencies {
@@ -62,6 +67,7 @@ dependencies {
     spectatorheadsImplementation sourceSets.main.output
     bobbyallowlistImplementation sourceSets.main.output
     quickfovImplementation sourceSets.main.output
+    hideservermessagesImplementation sourceSets.main.output
 }
 
 loom {
@@ -88,6 +94,7 @@ tasks.named("processResources").configure configureProcessResources
         sourceSets.spectatorheads,
         sourceSets.bobbyallowlist,
         sourceSets.quickfov,
+        sourceSets.hideservermessages,
 ].each { set ->
     println "thinkin bout ${set.name}"
     

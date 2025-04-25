@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "oneoffs-hideservermessages",
+	"version": "${version}",
+	"name": "Hide Server Messages",
+	"description": "Hide chat messages that come from the server",
+	"authors": [
+		"quaternary"
+	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/modfest-oneoffs/"
+	},
+	"license": "LGPL-3.0-or-later",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"agency.highlysuspect.oneoffs.hideservermessages.HideServerMessages"
+		]
+	},
+	"mixins": [
+		"oneoffs-hideservermessages.mixin.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+		"oneoffs-lib": "*",
+		"minecraft": ">=1.21"
+	}
+}

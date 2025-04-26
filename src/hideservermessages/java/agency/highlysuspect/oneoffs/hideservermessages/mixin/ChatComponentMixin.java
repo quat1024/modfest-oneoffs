@@ -15,6 +15,9 @@ public class ChatComponentMixin {
 	public void asdf(GuiMessage msg, CallbackInfo ci) {
 		if(HideServerMessages.INSTANCE.config.show) return;
 
+		//try to allow discord bridge messages
+		if(msg.content().getString().trim().contains("<")) return;
+
 		if(GuiMessageTag.system().equals(msg.tag()) || GuiMessageTag.systemSinglePlayer().equals(msg.tag()))
 			ci.cancel();
 	}

@@ -13,6 +13,7 @@
 	},
 	"license": "LGPL-3.0-or-later",
 	"environment": "client",
+	"icon": "modfest_oneoffs_icon_128.png",
 	"jars": [
 		{
 			"file": "META-INF/jars/oneoffs-lib-${version}.jar"

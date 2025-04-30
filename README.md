@@ -1,5 +1,7 @@
 # Modfest Oneoffs
 
+<img src="./_assets/icon_128.png" align="right" width="128" height="128"/>
+
 Tiny mods slapped together for BlanketCon '25.
 
 * **bobbyallowlist**: Allow specific blockentities to be loaded on the client in Bobby's fake chunks.

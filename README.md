@@ -9,6 +9,7 @@ Tiny mods slapped together for BlanketCon '25.
   * The config file is `bobby-block-entity-allowlist.conf` (so it'll sort next to Bobby's alphabetically).
 * **hideservermessages**: Only show chat messages that aren't "server" ones (command feedback, joins/leaves, etc).
   * Defaults to doing nothing. Toggle with `/hideservermessages`.
+  * By default, server messages containing a `<` character are not hidden. This is crude, but allows IRC/discord mods to avoid being hidden. You can change this in the config file.
   * The config file is `hideservermessages.properties`.
 * **quickfov**: Change FoV by holding a modifier key and moving the mouse left and right.
   * If you want up/down or if you want to reverse the zoom direction, see the config file.

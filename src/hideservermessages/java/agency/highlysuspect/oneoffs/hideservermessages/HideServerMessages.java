@@ -47,8 +47,6 @@ public class HideServerMessages extends BaseClient {
 
 		//lol
 		BiFunction<Boolean, CommandContext<FabricClientCommandSource>, Integer> set = (newOpt, cmd) -> {
-			//send the command feedback first so it doesn't get hidden as well :)
-			//n.b. this doesnt work lol
 			cmd.getSource().sendFeedback(Component.literal("Server messages are now ")
 				.append(Component.literal(newOpt ? "shown" : "hidden").withStyle(newOpt ? ChatFormatting.GREEN : ChatFormatting.RED)));
 

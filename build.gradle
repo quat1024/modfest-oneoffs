@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "agency.highlysuspect"
-version = "1.3.2"
+version = "1.4"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21);
 tasks.withType(JavaCompile).configureEach {
@@ -23,6 +23,8 @@ tasks.withType(JavaCompile).configureEach {
 
 sourceSets {
     main
+    
+    amalgam
     
     spectatorheads {
         compileClasspath += sourceSets.main.compileClasspath
@@ -90,6 +92,25 @@ Action<ProcessResources> configureProcessResources = {
 //root jar processResources
 tasks.named("processResources").configure configureProcessResources
 
+//amalgam (contains all the other mods as jij)
+def amalgamTask = tasks.register("amalgam", Jar) {
+    it.archiveBaseName = "modfest-oneoffs"
+    from sourceSets.amalgam.output
+    
+    //include oneoffs-lib
+    from (tasks.named("remapJar").flatMap({it.getArchiveFile()}), {
+        into "META-INF/jars/"
+    })
+    
+    //stop overwriting my FUCKING manifest
+    manifest {
+        attributes (["Main-Class": "Extract"])
+    }
+}
+tasks.named("processAmalgamResources").configure configureProcessResources
+tasks.named("assemble").configure { it.dependsOn amalgamTask }
+
+//each mod
 [
         sourceSets.spectatorheads,
         sourceSets.bobbyallowlist,
@@ -130,6 +151,15 @@ tasks.named("processResources").configure configureProcessResources
         it.archiveBaseName = myBaseName
         it.dependsOn setJarTask
         it.input = setJarTask.flatMap({ it.getArchiveFile() })
+    }
+    
+    //include it in the amalgam jar
+    amalgamTask.configure {
+        it.dependsOn setRemapTask
+        
+        from (setRemapTask.flatMap({it.getArchiveFile()}), {
+            into "META-INF/jars/"
+        })
     }
     
     artifacts {

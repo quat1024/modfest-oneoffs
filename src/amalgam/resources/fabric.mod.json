@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "modfest-oneoffs",
+	"version": "${version}",
+	"name": "Modfest Oneoffs",
+	"description": "Small, single-purpose mods created for Blanketcon 25. Double-click to extract.",
+	"authors": [
+		"quaternary"
+	],
+	"contact": {
+		"homepage": "https://highlysuspect.agency/",
+		"sources": "https://github.com/quat1024/modfest-oneoffs/"
+	},
+	"license": "LGPL-3.0-or-later",
+	"environment": "client",
+	"jars": [
+		{
+			"file": "META-INF/jars/oneoffs-lib-${version}.jar"
+		},
+		{
+			"file": "META-INF/jars/oneoffs-bobbyallowlist-${version}.jar"
+		},
+		{
+			"file": "META-INF/jars/oneoffs-hideservermessages-${version}.jar"
+		},
+		{
+			"file": "META-INF/jars/oneoffs-quickfov-${version}.jar"
+		},
+		{
+			"file": "META-INF/jars/oneoffs-spectatorheads-${version}.jar"
+		}
+	]
+}

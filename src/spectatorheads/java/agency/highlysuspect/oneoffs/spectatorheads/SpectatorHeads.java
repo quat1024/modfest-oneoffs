@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class SpectatorHeads extends BaseClient {
@@ -35,8 +36,8 @@ public class SpectatorHeads extends BaseClient {
 		autoload.load(newState -> CONFIG = newState);
 		
 		//watch for changes
-//		autoload.watch(newState ->
-//			Minecraft.getInstance().execute(() -> CONFIG = newState));
+		autoload.watch(newState ->
+			Minecraft.getInstance().execute(() -> CONFIG = newState));
 		
 		//lol
 		BiFunction<Boolean, CommandContext<FabricClientCommandSource>, Integer> set = (newOpt, cmd) -> {

@@ -1,8 +1,5 @@
 package agency.highlysuspect.oneoffs.common;
 
-import net.minecraft.Util;
-import org.slf4j.Logger;
-
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +10,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import net.minecraft.Util;
+import org.slf4j.Logger;
 
 public class AutoloadProperties<T> {
 	public AutoloadProperties(Logger log, Path propsPath, Supplier<T> defaultState, BiConsumer<T, Properties> toProperties, Function<Properties, T> fromProperties, String... comments) {
@@ -30,18 +30,24 @@ public class AutoloadProperties<T> {
 	protected final BiConsumer<T, Properties> toProperties;
 	protected final Function<Properties, T> fromProperties;
 	protected final String comments;
-	
-	protected long filewatcherDebounce = System.currentTimeMillis();
-	protected static final int TIMEOUT_MS = 300;
-	
+
+	//filewatcher debouncing
+	protected long filewatcherDebounce = 0;
+	protected static final int DEBOUNCE_MS = 300;
+
+	//hard-save debouncing - we want to ignore filewatcher changes that
+	//happen after saving the file
+	protected volatile long lastIngameSave = 0;
+	protected static final int SAVE_TIMEOUT_MS = 10000;
+
 	public void saveNow(T state) {
 		//create the default config file based on the current state
 		Properties props = new Properties();
 		toProperties.accept(state, props);
 		
-		//try to ignore the next filewatcher event,
-		//since we're about to trigger it by saving the file
+		//we're about to trigger the filewatcher by saving the file
 		filewatcherDebounce = System.currentTimeMillis();
+		lastIngameSave = System.currentTimeMillis();
 		
 		//save it
 		log.info("Saving config to {}", propsPath);
@@ -92,8 +98,15 @@ public class AutoloadProperties<T> {
 	
 	public void watch(Consumer<T> stateUpdater) {
 		SharedFileWatcher.registerWithWatcher(propsPath, () -> {
-			if(System.currentTimeMillis() - filewatcherDebounce > TIMEOUT_MS) {
-				filewatcherDebounce = System.currentTimeMillis();
+			long lastFilewatcherDebounce = filewatcherDebounce;
+			long now = System.currentTimeMillis();
+			filewatcherDebounce = now;
+
+			if(now - lastFilewatcherDebounce < DEBOUNCE_MS) {
+				log.info("only been {}ms since last filewatcher, ignoring", now - lastFilewatcherDebounce);
+			} else if(now - lastIngameSave < SAVE_TIMEOUT_MS) {
+				log.info("only been {}ms since last in-game save, ignoring", now - lastIngameSave);
+			} else {
 				load(stateUpdater);
 			}
 		});

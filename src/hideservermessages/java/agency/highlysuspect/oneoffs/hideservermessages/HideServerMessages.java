@@ -37,14 +37,13 @@ public class HideServerMessages extends BaseClient {
 		);
 
 		autoload.load(newConfig -> config = newConfig);
-//		autoload.watch(newConfig ->
-//			Minecraft.getInstance().execute(() -> {
-//				config = newConfig;
-//
-//				//call the refresh function (normally called when resizing window or something)
-//				ChatComponent chat = Minecraft.getInstance().gui.getChat();
-//				if(chat instanceof AccessorChatComponent acc) acc.hsm$refreshTrimmedMessages();
-//			}));
+		autoload.watch(newConfig ->
+			Minecraft.getInstance().execute(() -> {
+				config = newConfig;
+				//call the refresh function (normally called when resizing window or something)
+				ChatComponent chat = Minecraft.getInstance().gui.getChat();
+				if(chat instanceof AccessorChatComponent acc) acc.hsm$refreshTrimmedMessages();
+			}));
 
 		//lol
 		BiFunction<Boolean, CommandContext<FabricClientCommandSource>, Integer> set = (newOpt, cmd) -> {
@@ -54,7 +53,6 @@ public class HideServerMessages extends BaseClient {
 				.append(Component.literal(newOpt ? "shown" : "hidden").withStyle(newOpt ? ChatFormatting.GREEN : ChatFormatting.RED)));
 
 			config.show = newOpt;
-
 			//call the refresh function (normally called when resizing window or something)
 			ChatComponent chat = Minecraft.getInstance().gui.getChat();
 			if(chat instanceof AccessorChatComponent acc) acc.hsm$refreshTrimmedMessages();

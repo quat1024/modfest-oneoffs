@@ -34,3 +34,5 @@ The gradle setup is a bit weird; one mod per *source set* instead of per subproj
 remember to add the source-set and stuff, and add to the source-set loop towards the bottom
 
 and remember to add to "`amalgam`"'s `fabric.mod.json` contained-jars block. not sure how to do that automatically from gradle...
+
+there are some warnings about `Failed to find mixin mappings mixin-map-loom.mappings.1_21_1.layered+hash.2198-v2.amalgam.tiny in task outputs: task 'compileAmalgamJava' output files`; it's fine
